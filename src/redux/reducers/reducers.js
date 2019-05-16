@@ -4,22 +4,25 @@ export const dockets = (state = [], action) => {
   switch(action.type){
     case 'RECEIVE_DOCKETS':
       return action.payload;
-    case 'ADD_DOCKET':
+    case 'SAVE_LOT_TO_DOCKET':
+      const dockets = state.map(docket => {
+        if (docket.id !== action.payload.docketId) {
+          docket.lots = [...docket.lots, action.payload];
+          
+        }
+        return docket;
+      });
+      return [...dockets];
+    case 'RECEIVE_NEW_DOCKET':
       return [...state, action.payload];
     default: return state;
   }
 }
 
-export const fullDockets = (state = {}, action) => {
-  switch(action.type){
-    case 'SAVE_LOT_TO_DOCKET':
-      console.log(action.payload);
-      return {...state};
-    case 'RECEIVE_SINGLE_DOCKET':
-      return {...state, [action.payload._id]: action.payload};
-    default: return state;
-  }
-}
+// 'RECEIVE_NEW_DOCKET'
+// 'RECEIVE_DOCKETS'
+// 'RECEIVE_SINGLE_DOCKET'
+// 'SAVE_LOT_TO_DOCKET'
 
 export const userDetails = (state = null, action) => {
   switch(action.type){
@@ -52,5 +55,5 @@ export const errors = (state = {}, {type, payload}) => {
 }
 
 export default combineReducers({
-  dockets, fullDockets, userDetails, loginStatus, errors
+  dockets, userDetails, loginStatus, errors
 });

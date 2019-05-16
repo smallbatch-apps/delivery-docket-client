@@ -3,13 +3,6 @@ import * as UserService from '../../services/user';
 import * as DocketService from '../../services/dockets';
 import * as LotService from '../../services/lots';
 
-export const deleteError = payload => ({ type: 'DELETE_ERROR', payload });
-
-export const setError = (section, fields) => ({
-  type: 'SET_ERROR',
-  payload: { section, fields }
-});
-
 export const logInUser = (email, password) => {
   return async dispatch => {
     dispatch(deleteError('loginForm'));
@@ -36,6 +29,13 @@ export const createNewUser = user => {
   }
 }
 
+export const createNewDocket = docket => {
+  return async dispatch => {
+    const { data } = await DocketService.createDocket(docket);
+    dispatch(receiveNewDocket(data));
+  }
+}
+
 export const fetchAllDockets = () => {
   return async dispatch => {
     const { data } = await DocketService.getAll();
@@ -52,11 +52,17 @@ export const fetchSingleDocket = id => {
 
 export const createLotOnDocket = (docketId, lot) => {
   return async dispatch => {
-    const { data } = await LotService.addLotToDocket(docketId, lot)
+    const { data } = await LotService.addLotToDocket(docketId, lot);
+    data.docketId = docketId;
     dispatch(saveLotOnDocket(data));
   }
 }
 
+export const receiveNewDocket = payload => ({type: 'RECEIVE_NEW_DOCKET', payload});
+
 export const receiveDockets = payload => ({type: 'RECEIVE_DOCKETS', payload});
 export const receiveSingleDocket = payload => ({type: 'RECEIVE_SINGLE_DOCKET', payload});
 export const saveLotOnDocket = payload => ({type: 'SAVE_LOT_TO_DOCKET', payload});
+
+export const deleteError = payload => ({ type: 'DELETE_ERROR', payload });
+export const setError = (section, fields) => ({type: 'SET_ERROR', payload: { section, fields } });

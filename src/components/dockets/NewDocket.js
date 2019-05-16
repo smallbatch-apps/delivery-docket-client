@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
 
-import { createDocket } from '../../services/dockets';
+import { createNewDocket } from '../../redux/actions/actions';
 import { connect } from 'react-redux';
 
 
@@ -19,7 +19,7 @@ class NewDocket extends Component {
 
   handleSubmit = async event => {
     event.preventDefault();
-    await this.props.createDocket(this.state);
+    await this.props.createNewDocket(this.state);
     this.props.history.push('/dockets');
   }
 
