@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import Form, {Label, Control, Group, Check } from 'react-bootstrap/Form';
+import Form, { Label, Control, Group, Check } from 'react-bootstrap/Form';
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -23,9 +23,9 @@ class NewDocket extends Component {
     this.props.history.push('/dockets');
   }
 
-  handleFieldChange = ({target}) => this.setState({[target.id]: target.value});
+  handleFieldChange = ({ target }) => this.setState({ [target.id]: target.value });
 
-  handleDateChange = pickUpDate => this.setState({pickUpDate});
+  handleDateChange = pickUpDate => this.setState({ pickUpDate });
 
   render() {
     return <Fragment>
@@ -45,7 +45,7 @@ class NewDocket extends Component {
                 autoComplete="form-carrier"
                 value={this.state.carrier}
                 onChange={this.handleFieldChange}
-                />
+              />
             </Group>
           </div>
           <div className="col-sm">
@@ -64,12 +64,12 @@ class NewDocket extends Component {
             <Group controlId="pickUpDate">
               <Label>Pickup Date</Label>
               <div>
-              <DatePicker className="form-control"
-                id="pickUpDate"
-                selected={this.state.pickUpDate}
-                onChange={this.handleDateChange}
-                dateFormat="dd/MM/yyyy"
-              />
+                <DatePicker className="form-control"
+                  id="pickUpDate"
+                  selected={this.state.pickUpDate}
+                  onChange={this.handleDateChange}
+                  dateFormat="dd/MM/yyyy"
+                />
 
               </div>
 
@@ -87,21 +87,23 @@ class NewDocket extends Component {
             <Group controlId="freightPayableBy">
               <Label>Freight payable by</Label>
               <Fragment>
-              <Check
-                type="radio"
-                id="freightPayableBy"
-                name="formHorizontalRadios"
-                label="chl"
-                value="chl"
-              />
+                <Check
+                  type="radio"
+                  id="freightPayableBy"
+                  name="formHorizontalRadios"
+                  label="chl"
+                  value="chl"
+                  onClick={this.handleFieldChange}
+                />
 
-              <Check
-                type="radio"
-                id="freightPayableBy"
-                name="formHorizontalRadios"
-                label="shareholder"
-                value="shareholder"
-              />
+                <Check
+                  type="radio"
+                  id="freightPayableBy"
+                  name="formHorizontalRadios"
+                  label="shareholder"
+                  value="shareholder"
+                  onClick={this.handleFieldChange}
+                />
               </Fragment>
 
             </Group>
@@ -123,6 +125,6 @@ class NewDocket extends Component {
 
 }
 
-const mapStateToProps = ({loginStatus}) => ({loginStatus});
+const mapStateToProps = ({ loginStatus }) => ({ loginStatus });
 
-export default connect(mapStateToProps, {createDocket})(NewDocket);
+export default connect(mapStateToProps, { createNewDocket })(NewDocket);

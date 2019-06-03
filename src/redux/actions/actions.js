@@ -53,8 +53,21 @@ export const fetchSingleDocket = id => {
 export const createLotOnDocket = (docketId, lot) => {
   return async dispatch => {
     const { data } = await LotService.addLotToDocket(docketId, lot);
-    data.docketId = docketId;
-    dispatch(saveLotOnDocket(data));
+    dispatch(saveLotOnDocket({...data.lot, docketId}));
+  }
+}
+
+export const lodgeDocket = docketId => {
+  return async dispatch => {
+    const { data } = await DocketService.modifyDocket(docketId, {lodgementDate: new Date()});
+    dispatch(replaceDocket(data.docket));
+  }
+}
+
+export const createDeclarationOnDocket = (docketId, declaration) => {
+  return async dispatch => {
+    const { data } = await DocketService.addDeclarationToDocket(docketId, declaration);
+    dispatch(saveDeclarationOnDocket(data));
   }
 }
 
@@ -62,7 +75,9 @@ export const receiveNewDocket = payload => ({type: 'RECEIVE_NEW_DOCKET', payload
 
 export const receiveDockets = payload => ({type: 'RECEIVE_DOCKETS', payload});
 export const receiveSingleDocket = payload => ({type: 'RECEIVE_SINGLE_DOCKET', payload});
-export const saveLotOnDocket = payload => ({type: 'SAVE_LOT_TO_DOCKET', payload});
+export const saveLotOnDocket = payload => ({type: 'SAVE_LOT_ON_DOCKET', payload});
+export const saveDeclarationOnDocket = payload => ({type: 'SAVE_DECLARATION_ON_DOCKET', payload});
+export const replaceDocket = payload => ({type: 'REPLACE_DOCKET', payload});
 
 export const deleteError = payload => ({ type: 'DELETE_ERROR', payload });
 export const setError = (section, fields) => ({type: 'SET_ERROR', payload: { section, fields } });

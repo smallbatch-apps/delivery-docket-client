@@ -13,9 +13,13 @@ export const getOne = async id => {
 }
 
 export const createDocket = async docket => {
-  return await axios.post(docketUrl, docket);
+  return await axios.post(docketUrl, {docket});
+}
+
+export const modifyDocket = async (id, docket) => {
+  return await axios.patch(`${docketUrl}/${id}`, {docket});
 }
 
 export const addDeclarationToDocket = async (id, declaration) => {
-  return await axios.patch(`${docketUrl}/${id}`, {declaration});
+  return await axios.patch(`${docketUrl}/${id}`, {docket: {declaration}});
 }

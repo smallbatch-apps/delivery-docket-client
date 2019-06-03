@@ -1,8 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import {Link} from 'react-router-dom';
-import {connect} from 'react-redux';
-import isAfter from 'date-fns/isAfter';
-import isBefore from 'date-fns/isBefore';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import Octicon, { PlusSmall } from '@githubprimer/octicons-react';
 
 import { fetchAllDockets } from '../../redux/actions/actions';
 
@@ -10,49 +9,51 @@ import ListItem from './ListItem';
 
 class Dockets extends Component {
 
-  state = { currentDockets: [],  expiredDockets: []};
+  state = { lodgedDockets: [], unlodgedDockets: [] };
 
   async componentDidMount() {
     await this.props.fetchAllDockets();
 
     const { dockets } = this.props;
 
-    this.setState({
-      currentDockets: dockets.filter(docket => isAfter(new Date(), new Date(docket.pickUpDate))),
-      expiredDockets: dockets.filter(docket => isBefore(new Date(), new Date(docket.pickUpDate)))
-    });
+    const lodgedDockets = dockets.filter(docket => !!docket.lodgementDate);
+    const unlodgedDockets = dockets.filter(docket => !docket.lodgementDate);
+
+    this.setState({ lodgedDockets, unlodgedDockets });
   }
 
   render() {
     return <Fragment>
       <h3>Dockets</h3>
 
-      <Link to="/dockets/new" className="btn btn-primary my-3 btn-block">Create New Delivery Docket</Link>
+      <Link to="/dockets/new" className="btn btn-primary mt-3 btn-block">
+        <Octicon icon={PlusSmall} /> Create New Delivery Docket
+      </Link>
 
       <div className="row">
 
-      { !!this.state.currentDockets.length && <div className="col-sm">
-        <h4>Standing Dockets</h4>
+        {!!this.state.unlodgedDockets.length && <div className="col-sm">
+          <h4 className="mt-3">Outstanding Dockets</h4>
 
-        <ul className="list-group my-3">
-          {this.state.currentDockets.map(item => <ListItem item={item} key={item._id} />)}
-        </ul>
-      </div> }
+          <ul className="list-group mt-3">
+            {this.state.unlodgedDockets.map(item => <ListItem item={item} key={item._id} />)}
+          </ul>
+        </div>}
 
-      { !!this.state.expiredDockets.length && <div className="col-sm">
-        <h4>Expired Dockets</h4>
+        {!!this.state.lodgedDockets.length && <div className="col-sm">
+          <h4 className="mt-3">Lodged Dockets</h4>
 
-        <ul className="list-group mt-3">
-          {this.state.expiredDockets.map(item => <ListItem item={item} key={item._id} />)}
-        </ul>
-      </div> }
+          <ul className="list-group my-3">
+            {this.state.lodgedDockets.map(item => <ListItem item={item} key={item._id} />)}
+          </ul>
+        </div>}
+
       </div>
 
     </Fragment>
   }
-
 }
 
-const mapStateToProps = ({dockets}) => ({dockets});
+const mapStateToProps = ({ dockets }) => ({ dockets });
 
-export default connect(mapStateToProps, {fetchAllDockets})(Dockets);
+export default connect(mapStateToProps, { fetchAllDockets })(Dockets);

@@ -14,9 +14,10 @@ class Login extends Component {
 
   handlePasswordChange = ({target}) => this.setState({password: target.value});
 
-  handleSubmit = event => {
+  handleSubmit = async event => {
     event.preventDefault();
-    this.props.logInUser(this.state.email, this.state.password);
+    await this.props.logInUser(this.state.email, this.state.password);
+    window.location = '/';
   }
 
   render() {

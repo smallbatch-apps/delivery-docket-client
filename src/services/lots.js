@@ -6,5 +6,5 @@ axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
 
 export const addLotToDocket = async (docketId, lot) => {
   const lotUrlComplete = lotUrl.replace('%docketId%', docketId);
-  return await axios.post(lotUrlComplete, lot);
+  return await axios.post(lotUrlComplete, {lot});
 }

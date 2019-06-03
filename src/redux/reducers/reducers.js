@@ -4,25 +4,34 @@ export const dockets = (state = [], action) => {
   switch(action.type){
     case 'RECEIVE_DOCKETS':
       return action.payload;
-    case 'SAVE_LOT_TO_DOCKET':
-      const dockets = state.map(docket => {
-        if (docket.id !== action.payload.docketId) {
+    case 'SAVE_LOT_ON_DOCKET':
+      let docketList = state.map(docket => {
+        if (docket._id === action.payload.docketId) {
           docket.lots = [...docket.lots, action.payload];
-          
         }
         return docket;
       });
-      return [...dockets];
+      return [...docketList];
+    case 'SAVE_DECLARATION_ON_DOCKET':
+      let docketList2 = state.map(docket => {
+        if (docket._id === action.payload._id) {
+          docket.declaration = action.payload.declaration;
+        }
+        return docket;
+      });
+      return [...docketList2];
+    case 'REPLACE_DOCKET':
+      console.log(action.payload);
+      let docketList3 = state.map(docket => {
+        return docket._id === action.payload._id ? action.payload : docket;
+      });
+      return [...docketList3];
     case 'RECEIVE_NEW_DOCKET':
       return [...state, action.payload];
     default: return state;
   }
 }
 
-// 'RECEIVE_NEW_DOCKET'
-// 'RECEIVE_DOCKETS'
-// 'RECEIVE_SINGLE_DOCKET'
-// 'SAVE_LOT_TO_DOCKET'
 
 export const userDetails = (state = null, action) => {
   switch(action.type){

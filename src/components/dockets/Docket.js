@@ -1,176 +1,163 @@
 import React, { Component, Fragment } from 'react';
-import Form, {Label, Control, Group, Check } from 'react-bootstrap/Form';
-import {Link} from 'react-router-dom';
-import {connect} from 'react-redux';
+import Form from 'react-bootstrap/Form';
+import { format } from 'date-fns';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import Octicon, { PlusSmall, CloudUpload } from '@githubprimer/octicons-react';
 
-import {fetchSingleDocket} from '../../redux/actions/actions';
+import StatusIcons from '../StatusIcons';
+
+import { fetchSingleDocket, fetchAllDockets, lodgeDocket } from '../../redux/actions/actions';
 
 class Docket extends Component {
 
   state = { docket: null, edit: false }
 
   async componentDidMount() {
-    const id = this.props.match.params.id;
-    let docket = this.props.fullDockets[id];
-
-    if (docket === undefined) {
-      await this.props.fetchSingleDocket(id);
-      docket = this.props.fullDockets[id];
+    const docketId = this.props.match.params.id;
+    if (!this.props.dockets.length) {
+      await this.props.fetchAllDockets();
     }
+    const docket = this.props.dockets.find(({ _id }) => _id === docketId);
+    this.setState({ docket });
+  }
 
+  toggleEditing = () => this.setState({ edit: !this.state.edit })
+
+  handleSubmit = async event => {
+    event.preventDefault();
+    await this.props.lodgeDocket(this.state.docket._id);
+    const docket = this.props.dockets.find(({_id}) => _id === this.state.docket._id);
     this.setState({docket});
   }
 
-  toggleEditing = () => this.setState({edit: !this.state.edit})
-
-  handleSubmit = event => {
-
-  }
-
-  handleFieldChange = ({target}) => {
-    const docket = {...this.state.docket, [target.id]: target.value}
-    this.setState({docket});
+  handleFieldChange = ({ target }) => {
+    const docket = { ...this.state.docket, [target.id]: target.value }
+    this.setState({ docket });
   }
 
   render() {
-    const {docket} = this.state;
+    const { docket } = this.state;
 
     if (!docket) {
       return '';
     }
 
+    if (typeof docket.receivedByDate === 'undefined') {
+      docket.receivedByDate = '';
+    }
+
+    const hasDeclaration = docket.declaration && typeof docket.declaration !== 'undefined';
+    const hasLots = docket.lots.length !== 0;
+    const isReady = hasDeclaration && hasLots;
+    const isLodged = Boolean(docket.lodgementDate);
+
+    const formattedPickUpDate = docket.pickUpDate
+      ? format(new Date(docket.pickUpDate), 'dd-MM-yyyy')
+      : 'Not Entered';
+
+    const formattedReceivedByDate = docket.receivedByDate
+      ? format(new Date(docket.receivedByDate), 'dd-MM-yyyy')
+      : 'Not Yet Received';
+
+    const formattedLodgementDate = docket.lodgementDate
+      ? format(new Date(docket.lodgementDate), 'dd-MM-yyyy')
+      : 'Not Yet Lodged';
+
     return <Fragment>
-      <h3>{this.state.edit ? 'Edit' : 'Display'} Docket</h3>
+      <h3 className="mb-3">{this.state.edit ? 'Edit' : 'Display'} Docket</h3>
+
+      <StatusIcons isDocket={true} hasLots={hasLots} hasDeclaration={hasDeclaration} isLodged={isLodged} />
 
       <Form onSubmit={this.handleSubmit}>
-      <div className="row">
-        <div className="col"><h5>Delivery Details</h5></div>
-      </div>
-      <div className="row">
-        <div className="col-sm">
-          <Group controlId="carrier">
-            <Label>Carrier</Label>
-            <Control type="text"
-              plaintext={!this.state.edit}
-              placeholder="Enter carrier"
-              autoComplete="form-carrier"
-              value={docket.carrier}
-              onChange={this.handleFieldChange}
-              />
-          </Group>
+
+        <div className="row">
+          <div className="col"><h5>Docket and Delivery Details</h5></div>
         </div>
-        <div className="col-sm">
-          <Group controlId="pickUpDate">
-            <Label>Pickup Date</Label>
-            <Control
-              type="text"
-              plaintext={!this.state.edit}
-              placeholder="Pickup Date"
-              autoComplete="pickup-date"
-              value={docket.pickUpDate}
-              onChange={this.handleFieldChange}
-            />
-          </Group>
+
+        <dl className="row small">
+          <dt className="col-5">Carrier</dt>
+          <dd className="col-7">{docket.carrier}</dd>
+
+          <dt className="col-5">Freight Pay By</dt>
+          <dd className="col-7">{docket.freightPayableBy}</dd>
+
+          <dt className="col-5">Pick Up Date</dt>
+          <dd className="col-7">{formattedPickUpDate}</dd>
+
+          <dt className="col-5">Lodgement Date</dt>
+          <dd className="col-7">{formattedLodgementDate}</dd>
+
+          <dt className="col-5">Received By CHL</dt>
+          <dd className="col-7">{formattedReceivedByDate}</dd>
+        </dl>
+
+        <div className="row">
+          <div className="col"><h5>Lots on docket</h5></div>
         </div>
-        <div className="col-sm">
-          <Group controlId="freightPayableBy">
-            <Label>Freight payable by</Label>
-            {this.state.edit && <Fragment>
-            <Check
-              type="radio"
-              id="freightPayableBy-chl"
-              label="chl"
-              value="chl"
-            />
 
-            <Check
-              type="radio"
-              id="freight-paid-shareholder"
-              label="shareholder"
-              value="shareholder"
-            />
-            </Fragment> }
+        <div className="row mb-3">
+          <div className="col">
+            <div className="list-group">
+              {hasLots && <table className="table table-sm mb-0">
+                <thead>
+                  <tr>
+                    <th scope="col">Variety</th>
+                    <th scope="col">Extracted</th>
+                    <th scope="col">Count</th>
+                    <th scope="col">Comments</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {docket.lots.map(lot => <tr key={lot._id}>
+                    <td>{lot.variety}</td>
+                    <td>{lot.yrMonthExtracted}</td>
+                    <td>{lot.totalCount}</td>
+                    <td>{lot.markingsAndComments}</td>
+                    <td><Link to={`/dockets/${docket._id}/lots/${lot._id}`} >View</Link></td>
+                  </tr>)}
+                </tbody>
+              </table> }
+              <div className="row">
 
-            {!this.state.edit && <Control
-              type="text"
-              plaintext
-              autoComplete="pickup-date"
-              value={docket.freightPayableBy}
-              onChange={this.handleFieldChange}
-            />}
-          </Group>
-        </div>
-      </div>
-
-
-      <div className="row">
-        <div className="col"><h5>Lots on docket</h5></div>
-      </div>
-      <div className="row">
-        <div className="col">
-          <div className="list-group">
-            <table className="table table-sm">
-              <thead>
-                <tr>
-                  <th scope="col">Variety</th>
-                  <th scope="col">Extracted</th>
-                  <th scope="col">Count</th>
-                  <th scope="col">Comments</th>
-                  <th scope="col"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {docket.lots.map(lot=> <tr key={lot._id}>
-                  <td>{lot.variety}</td>
-                  <td>{lot.yrMonthExtracted}</td>
-                  <td>{lot.totalCount}</td>
-                  <td>{lot.markingsAndComments}</td>
-                  <td><Link to={`/dockets/${docket._id}/lot/${lot._id}`} >View</Link></td>
-                </tr>)}
-
-              </tbody>
-            </table>
+                <div className="col">
+                  <Link to={`/dockets/${docket._id}/lots/new`} className="btn btn-outline-info btn-sm btn-block">
+                    <Octicon icon={PlusSmall} /> Add Lot
+                  </Link>
+                </div>
+              </div>
+            </div>
 
           </div>
         </div>
-      </div>
-      <div className="row">
-        <div className="col">
-          Office Use: Received
-        </div>
-      </div>
-      <div className="row">
-        <div className="col-sm">
-          <Group controlId="receivedByDate">
-            <Label>Received By CHL</Label>
-            <Control
-              type="text"
-              plaintext={!this.state.edit}
-              placeholder="received by chl"
-              autoComplete="received-date"
-              value={docket.receivedByDate?docket.receivedByDate:'Not Applicable'}
-              onChange={this.handleFieldChange}
-            />
-          </Group>
+
+        <div className="row">
+          <div className="col">
+            <h5>Declaration</h5>
+
+            <div className="row">
+              <div className="col">
+                { !hasDeclaration && <Link to={`/dockets/${docket._id}/declaration`} className="btn btn-outline-info btn-sm btn-block" >
+                  <Octicon icon={PlusSmall} /> Add Declaration
+                </Link> }
+
+                { hasDeclaration && <small>Declaration is found</small> }
+              </div>
+            </div>
+          </div>
         </div>
 
-      </div>
-
-      <div className="row">
-        <div className="col">
-          <h4>Declaration</h4>
-
-          <p>{docket.declaration ? 'Declaration set' : 'No declaration present'}</p>
-
-
-          { <Link to={`/dockets/${docket._id}/declaration`} className="" >View Declarations</Link> }
-        </div>
-      </div>
-      <div className="row">
-        <div className="col">
-          <button className="btn btn-primary btn-block mt-3" onClick={this.toggleEditing} >Edit This Docket</button>
-        </div>
-      </div>
+        { !isLodged && <div className="row">
+          <div className="col">
+            <button
+              className="btn btn-success btn-block mt-3"
+              onClick={this.handleSubmit} disabled={!isReady}
+            >
+              <Octicon icon={CloudUpload} /> Lodge Delivery Docket
+          </button>
+          </div>
+        </div> }
 
       </Form>
     </Fragment>
@@ -178,6 +165,6 @@ class Docket extends Component {
 
 }
 
-const mapStateToProps = ({fullDockets}) => ({fullDockets});
+const mapStateToProps = ({ dockets }) => ({ dockets });
 
-export default connect(mapStateToProps, {fetchSingleDocket})(Docket);
+export default connect(mapStateToProps, { fetchSingleDocket, fetchAllDockets, lodgeDocket })(Docket);
