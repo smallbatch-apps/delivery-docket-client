@@ -8,15 +8,15 @@ import LoginIsLoggedIn from './LoginIsLoggedIn';
 
 class Login extends Component {
 
-  state = {email: '', password: ''};
+  state = {beekeeper_id: '', password: ''};
 
-  handleEmailChange = ({target}) => this.setState({email: target.value});
+  handleBeekeeperIdChange = ({target}) => this.setState({beekeeper_id: target.value});
 
   handlePasswordChange = ({target}) => this.setState({password: target.value});
 
   handleSubmit = async event => {
     event.preventDefault();
-    await this.props.logInUser(this.state.email, this.state.password);
+    await this.props.logInUser(this.state.beekeeper_id, this.state.password);
     window.location = '/';
   }
 
@@ -28,7 +28,7 @@ class Login extends Component {
     return <Fragment>
       <h3>Log In</h3>
 
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum dolores neque laudantium illo corrupti, error modi quas voluptates ea est nemo natus minima tenetur quasi omnis. Vero repellendus alias saepe!</p>
+      <p>Please enter your beekeeper ID and the password you selected in order to log in.</p>
 
       <div className="card">
         <div className="card-body">
@@ -39,12 +39,12 @@ class Login extends Component {
 
         <Form onSubmit={this.handleSubmit}>
           <Form.Group controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control type="email"
-              placeholder="Enter email"
-              autoComplete="user-email"
-              value={this.state.email}
-              onChange={this.handleEmailChange}
+            <Form.Label>Beekeeper ID</Form.Label>
+            <Form.Control type="integer"
+              placeholder="Beekeeper ID"
+              autoComplete="user-beekeeper-id"
+              value={this.state.beekeeper_id}
+              onChange={this.handleBeekeeperIdChange}
               isInvalid={hasError}
               />
           </Form.Group>

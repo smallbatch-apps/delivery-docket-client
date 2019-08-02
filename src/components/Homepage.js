@@ -1,9 +1,21 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, Component} from 'react';
+// import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-export default () => <Fragment>
-  <h3>Instructions</h3>
+export default class Homepage extends Component {
 
-  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis fuga tempora cupiditate assumenda voluptate natus adipisci officiis libero tenetur! Sapiente dolores fugiat minus suscipit numquam, veniam eos culpa voluptatem voluptatum?</p>
-  <p>Corrupti, fuga unde iusto temporibus fugiat non reiciendis debitis eum, quos, minus consequuntur illo eos! Facilis iusto et quibusdam voluptate nulla nobis nisi officia, numquam rem! Officia soluta distinctio fugiat.</p>
-  <p>Enim rem asperiores perferendis, doloremque ducimus nam rerum eius numquam labore id minima sapiente recusandae suscipit reprehenderit cumque. Aspernatur praesentium architecto maxime molestiae eligendi dicta quos saepe nostrum nesciunt voluptas?</p>
-</Fragment>;
+  render() {
+    return <Fragment>
+      <h3>Quick Actions</h3>
+
+      <Link to="/robbings/new" className="btn btn-primary btn-block">Rob Hive</Link>
+      <Link to="/containers/new" className="btn btn-primary btn-block">Create Container</Link>
+      <Link to="/dockets/new" className="btn btn-primary btn-block">Request Delivery</Link>
+
+    </Fragment>
+  }
+}
+
+// const mapStateToProps = ({ dockets }) => ({ dockets });
+
+// export default connect(mapStateToProps, {fetchAllDockets, fetchAllLots})(Homepage);

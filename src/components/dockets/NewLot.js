@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Form, { Label, Control, Group, Check } from 'react-bootstrap/Form';
 // import DatePicker from "react-datepicker";
 
-import { createLotOnDocket } from '../../redux/actions/actions'
+import { createNewLot } from '../../redux/actions/actions'
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -206,4 +206,4 @@ class NewLot extends Component {
 
 const mapStateToProps = ({ loginStatus, dockets }) => ({ loginStatus, dockets });
 
-export default connect(mapStateToProps, { createLotOnDocket })(NewLot);
+export default connect(mapStateToProps, { createNewLot })(NewLot);

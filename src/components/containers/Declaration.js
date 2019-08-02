@@ -1,43 +1,50 @@
 import React, { Component, Fragment } from 'react';
-import Octicon, { Verified } from '@githubprimer/octicons-react';
-import { connect } from 'react-redux';
-import { createDeclarationOnDocket } from '../../redux/actions/actions';
 import Form, { Group, Check } from 'react-bootstrap/Form';
 
 
 class Declaration extends Component {
 
   state = {
-    qaConditions: '',
-    efbEvidence: '',
-    afbEvidence: '',
-    otcTreatment: '',
-    otcTreatmentType: '',
-    otcTreatmentNumber: '',
-    chemicalExposure: '',
-    chemicalExposureDetail: '',
-    gmoExposure: '',
-    gmoExposureDetail: '',
-    medicalGradeExposure: '',
-    medicalGradeExposureDetail: '',
-    supplementalFeeding: '',
-    supplementalFeedingDetail: ''
+    qa_conditions: '',
+    efb_evidence: '',
+    afb_evidence: '',
+    otc_treatment: '',
+    otc_treatment_type: '',
+    otc_treatment_number: '',
+    chemical_exposure: '',
+    chemical_exposure_detail: '',
+    gmo_exposure: '',
+    gmo_exposure_detail: '',
+    medical_grade_exposure: '',
+    medical_grade_exposure_detail: '',
+    supplemental_feeding: '',
+    supplemental_feeding_detail: ''
   }
 
-  handleFieldChange = ({ target }) => this.setState({ [target.id]: target.value });
+  handleFieldChange = ({ target }) => {
+    this.setState({ [target.id]: target.value }, () => {
+      if(this.isReady()){
+        this.props.updateDeclaration(this.state);
+      }
+    });
+  }
 
   handleCheckBox = ({ target }) => {
     const value = target.value === 'true';
 
-    this.setState({ [target.id]: value });
+    this.setState({ [target.id]: value }, () => {
+      if(this.isReady()){
+        this.props.updateDeclaration(this.state);
+      }
+    });
   }
 
-  handleSubmit = async event => {
-    event.preventDefault();
-    const docketId = this.props.match.params.id;
-    await this.props.createDeclarationOnDocket(docketId, this.state);
-    window.location = `/dockets/${docketId}`;
-  }
+  // handleSubmit = async event => {
+  //   event.preventDefault();
+  //   const docketId = this.props.match.params.id;
+  //   //await this.props.createDeclarationOnLot(docketId, this.state);
+  //   window.location = `/dockets/${docketId}`;
+  // }
 
   isReady = () => {
     // if (this.state.otcTreatment === true
@@ -46,40 +53,40 @@ class Declaration extends Component {
     //   return false;
     // }
 
-    if (this.state.chemicalExposure === true &&
-      this.state.chemicalExposureDetail === '') {
+    if (this.state.chemical_exposure === true &&
+      this.state.chemical_exposure_detail === '') {
       return false;
     }
 
-    if (this.state.gmoExposure === true &&
-      this.state.gmoExposureDetail === '') {
+    if (this.state.gmo_exposure === true &&
+      this.state.gmo_exposure_detail === '') {
       return false;
     }
 
-    if (this.state.medicalGradeExposure === true &&
-      this.state.medicalGradeExposureDetail === '') {
+    if (this.state.medical_grade_exposure === true &&
+      this.state.medical_grade_exposure_detail === '') {
       return false;
     }
 
-    if (this.state.supplementalFeeding === true &&
-      this.state.supplementalFeedingDetail === '') {
+    if (this.state.supplemental_feeding === true &&
+      this.state.supplemental_feeding_detail === '') {
       return false;
     }
 
-    return this.state.qaConditions === true &&
-      this.state.efbEvidence !== '' &&
-      this.state.afbEvidence !== '' &&
-      this.state.otcTreatment !== '' &&
-      this.state.chemicalExposure !== '' &&
-      this.state.gmoExposure !== '' &&
-      this.state.medicalGradeExposure !== '' &&
-      this.state.supplementalFeeding !== '';
+    return this.state.qa_conditions === true &&
+      this.state.efb_evidence !== '' &&
+      this.state.afb_evidence !== '' &&
+      this.state.otc_treatment !== '' &&
+      this.state.chemical_exposure !== '' &&
+      this.state.gmo_exposure !== '' &&
+      this.state.medical_grade_exposure !== '' &&
+      this.state.supplemental_feeding !== '';
   }
 
   render() {
     return <Fragment>
 
-      <h3>Add Declaration</h3>
+      <h4>Declaration</h4>
 
       <Form>
         <div className="row">
@@ -88,27 +95,27 @@ class Declaration extends Component {
             my supervision and according to the Quality Assurance conditions of Capilano
             (as detailed below):
 
-            <Group controlId="qaConditions">
+            <Group controlId="qa_conditions">
               <div className="row">
                 <div className="col">
                   <Check
                     type="radio"
-                    id="qaConditions"
-                    name="qaConditions"
+                    id="qa_conditions"
+                    name="qa_conditions"
                     label="Yes"
                     value={true}
-                    checked={this.state.qaConditions}
+                    checked={this.state.qa_conditions}
                     onChange={this.handleCheckBox}
                   />
                 </div>
                 <div className="col">
                   <Check
                     type="radio"
-                    id="qaConditions"
-                    name="qaConditions"
+                    id="qa_conditions"
+                    name="qa_conditions"
                     label="No"
                     value={false}
-                    checked={this.state.qaConditions === false}
+                    checked={this.state.qa_conditions === false}
                     onChange={this.handleCheckBox}
                   />
                 </div>
@@ -127,21 +134,21 @@ class Declaration extends Component {
                 <div className="col">
                   <Check
                     type="radio"
-                    id="efbEvidence"
-                    name="efbEvidence"
+                    id="efb_evidence"
+                    name="efb_evidence"
                     label="EFB - Yes"
                     value={true}
-                    checked={this.state.efbEvidence}
+                    checked={this.state.efb_evidence}
                     onChange={this.handleCheckBox}
                   />
 
                   <Check
                     type="radio"
-                    id="efbEvidence"
-                    name="efbEvidence"
+                    id="efb_evidence"
+                    name="efb_evidence"
                     label="EFB - No"
                     value={false}
-                    checked={this.state.efbEvidence === false}
+                    checked={this.state.efb_evidence === false}
                     onChange={this.handleCheckBox}
                   />
                 </div>
@@ -150,21 +157,21 @@ class Declaration extends Component {
                 <div className="col">
                   <Check
                     type="radio"
-                    id="afbEvidence"
+                    id="afb_evidence"
                     name="formHorizontalRadios"
                     label="AFB - Yes"
                     value={true}
-                    checked={this.state.afbEvidence}
+                    checked={this.state.afb_evidence}
                     onChange={this.handleCheckBox}
                   />
 
                   <Check
                     type="radio"
-                    id="afbEvidence"
+                    id="afb_evidence"
                     name="formHorizontalRadios"
                     label="AFB - No"
                     value={false}
-                    checked={this.state.afbEvidence === false}
+                    checked={this.state.afb_evidence === false}
                     onChange={this.handleCheckBox}
                   />
 
@@ -181,43 +188,43 @@ class Declaration extends Component {
             <small>Have the hives been treated with Oxytetracycline (OTC) antibiotics in the last 6 months?</small>
           </div>
           <div className="col-sm-4">
-            <Group controlId="otcTreatment">
+            <Group controlId="otc_treatment">
               <div className="row">
                 <div className="col">
                   <Check
                     type="radio"
-                    id="otcTreatment"
-                    name="otcTreatment"
+                    id="otc_treatment"
+                    name="otc_treatment"
                     label="Yes"
                     value={true}
-                    checked={this.state.otcTreatment}
+                    checked={this.state.otc_treatment}
                     onChange={this.handleCheckBox}
                   />
                 </div>
                 <div className="col">
                   <Check
                     type="radio"
-                    id="otcTreatment"
-                    name="otcTreatment"
+                    id="otc_treatment"
+                    name="otc_treatment"
                     label="No"
                     value={false}
-                    checked={this.state.otcTreatment === false}
+                    checked={this.state.otc_treatment === false}
                     onChange={this.handleCheckBox}
                   />
                 </div>
               </div>
 
-              {this.state.otcTreatment && <Fragment>
+              {this.state.otc_treatment && <Fragment>
                 <small>Treatment type</small>
                 <div className="row">
                   <div className="col">
                     <Check
                       type="radio"
-                      id="otcTreatmentType"
-                      name="otcTreatmentType"
+                      id="otc_treatment_type"
+                      name="otc_treatment_type"
                       label="Blanket Treatment"
                       value="Blanket"
-                      checked={this.state.otcTreatmentType === "Blanket"}
+                      checked={this.state.otc_treatment_type === "Blanket"}
                       onChange={this.handleFieldChange}
                     />
 
@@ -226,11 +233,11 @@ class Declaration extends Component {
 
                     <Check
                       type="radio"
-                      id="otcTreatmentType"
-                      name="otcTreatmentType"
+                      id="otc_treatment_type"
+                      name="otc_treatment_type"
                       label="Spot Treatment"
                       value="Spot"
-                      checked={this.state.otcTreatmentType === "Spot"}
+                      checked={this.state.otc_treatment_type === "Spot"}
                       onChange={this.handleFieldChange}
                     />
                   </div>
@@ -240,33 +247,33 @@ class Declaration extends Component {
                   <div className="col">
                     <Check
                       type="radio"
-                      id="otcTreatmentNumber"
-                      name="otcTreatmentNumber"
+                      id="otc_treatment_number"
+                      name="otc_treatment_number"
                       label="10%"
                       value="10"
-                      checked={this.state.otcTreatmentNumber === "10"}
+                      checked={this.state.otc_treatment_number === "10"}
                       onChange={this.handleFieldChange}
                     />
                   </div>
                   <div className="col">
                     <Check
                       type="radio"
-                      id="otcTreatmentNumber"
-                      name="otcTreatmentNumber"
+                      id="otc_treatment_number"
+                      name="otc_treatment_number"
                       label="20%"
                       value="20"
-                      checked={this.state.otcTreatmentNumber === "20"}
+                      checked={this.state.otc_treatment_number === "20"}
                       onChange={this.handleFieldChange}
                     />
                   </div>
                   <div className="col">
                     <Check
                       type="radio"
-                      id="otcTreatmentNumber"
-                      name="otcTreatmentNumber"
+                      id="otc_treatment_number"
+                      name="otc_treatment_number"
                       label="30+%"
                       value="30+"
-                      checked={this.state.otcTreatmentNumber === "30+"}
+                      checked={this.state.otc_treatment_number === "30+"}
                       onChange={this.handleFieldChange}
                     />
                   </div>
@@ -282,38 +289,38 @@ class Declaration extends Component {
             <small>Have the honeys or containers detailed above been exposed to any chemicals (eg. repellents, phenol, benzaldehyde, pesticides, para-dichlorobenzene, insecticides, miticides, herbicides, small hive beetle controls, fungicides, wax moth controls, other antibiotics)?</small>
           </div>
           <div className="col-sm-4">
-            <Group controlId="chemicalExposure">
+            <Group controlId="chemical_exposure">
               <div className="row">
                 <div className="col">
                   <Check
                     type="radio"
-                    id="chemicalExposure"
-                    name="chemicalExposure"
+                    id="chemical_exposure"
+                    name="chemical_exposure"
                     label="Yes"
                     value={true}
-                    checked={this.state.chemicalExposure}
+                    checked={this.state.chemical_exposure}
                     onChange={this.handleCheckBox}
                   />
                 </div>
                 <div className="col">
                   <Check
                     type="radio"
-                    id="chemicalExposure"
-                    name="chemicalExposure"
+                    id="chemical_exposure"
+                    name="chemical_exposure"
                     label="No"
                     value={false}
-                    checked={this.state.chemicalExposure === false}
+                    checked={this.state.chemical_exposure === false}
                     onChange={this.handleCheckBox}
                   />
                 </div>
               </div>
 
-              {this.state.chemicalExposure && <Fragment>
+              {this.state.chemical_exposure && <Fragment>
                 <small>Please name the substance or chemical</small>
 
                 <div className="row">
                   <div className="col">
-                    <input className="form-control" type="text" id="chemicalExposureDetail" onChange={this.handleFieldChange} value={this.state.chemicalExposureDetail} />
+                    <input className="form-control" type="text" id="chemical_exposure_detail" onChange={this.handleFieldChange} value={this.state.chemicalExposureDetail} />
                   </div>
                 </div>
               </Fragment>}
@@ -328,38 +335,38 @@ class Declaration extends Component {
             <small>Have the hives been located closer than 5km to a known genetically modified crop?</small>
           </div>
           <div className="col-sm-4">
-            <Group controlId="gmoExposure">
+            <Group controlId="gmo_exposure">
               <div className="row">
                 <div className="col">
                   <Check
                     type="radio"
-                    id="gmoExposure"
-                    name="gmoExposure"
+                    id="gmo_exposure"
+                    name="gmo_exposure"
                     label="Yes"
                     value={true}
-                    checked={this.state.gmoExposure}
+                    checked={this.state.gmo_exposure}
                     onChange={this.handleCheckBox}
                   />
                 </div>
                 <div className="col">
                   <Check
                     type="radio"
-                    id="gmoExposure"
-                    name="gmoExposure"
+                    id="gmo_exposure"
+                    name="gmo_exposure"
                     label="No"
                     value={false}
-                    checked={this.state.gmoExposure === false}
+                    checked={this.state.gmo_exposure === false}
                     onChange={this.handleCheckBox}
                   />
                 </div>
               </div>
 
-              {this.state.gmoExposure && <Fragment>
+              {this.state.gmo_exposure && <Fragment>
                 <small>Please name the crop</small>
 
                 <div className="row">
                   <div className="col">
-                    <input className="form-control" type="text" id="gmoExposureDetail" onChange={this.handleFieldChange} value={this.state.gmoExposureDetail} />
+                    <input className="form-control" type="text" id="gmo_exposure_detail" onChange={this.handleFieldChange} value={this.state.gmoExposureDetail} />
                   </div>
                 </div>
               </Fragment>}
@@ -374,38 +381,38 @@ class Declaration extends Component {
             <small>Medical/Active Grade Honey (e.g. Leptospermum, Manuka, Jarrah) Only: Have the hives or honey supplied been exposed to any chemicals or antibiotics (including OTC) in the last 6 months?</small>
           </div>
           <div className="col-sm-4">
-            <Group controlId="medicalGradeExposure">
+            <Group controlId="medical_grade_exposure">
               <div className="row">
                 <div className="col">
                   <Check
                     type="radio"
-                    id="medicalGradeExposure"
-                    name="medicalGradeExposure"
+                    id="medical_grade_exposure"
+                    name="medical_grade_exposure"
                     label="Yes"
                     value={true}
-                    checked={this.state.medicalGradeExposure}
+                    checked={this.state.medical_grade_exposure}
                     onChange={this.handleCheckBox}
                   />
                 </div>
                 <div className="col">
                   <Check
                     type="radio"
-                    id="medicalGradeExposure"
-                    name="medicalGradeExposure"
+                    id="medical_grade_exposure"
+                    name="medical_grade_exposure"
                     label="No"
                     value={false}
-                    checked={this.state.medicalGradeExposure === false}
+                    checked={this.state.medical_grade_exposure === false}
                     onChange={this.handleCheckBox}
                   />
                 </div>
               </div>
 
-              {this.state.medicalGradeExposure && <Fragment>
+              {this.state.medical_grade_exposure && <Fragment>
                 <small>Provide details</small>
 
                 <div className="row">
                   <div className="col">
-                    <input className="form-control" type="text" id="medicalGradeExposureDetail" onChange={this.handleFieldChange} value={this.state.medicalGradeExposureDetail} />
+                    <input className="form-control" type="text" id="medical_grade_exposure_detail" onChange={this.handleFieldChange} value={this.state.medical_grade_exposure_detail} />
                   </div>
                 </div>
               </Fragment>}
@@ -421,38 +428,38 @@ class Declaration extends Component {
           </div>
 
           <div className="col-sm-4">
-            <Group controlId="supplementalFeeding">
+            <Group controlId="supplemental_feeding">
               <div className="row">
                 <div className="col">
                   <Check
                     type="radio"
-                    id="supplementalFeeding"
-                    name="supplementalFeeding"
+                    id="supplemental_feeding"
+                    name="supplemental_feeding"
                     label="Yes"
                     value={true}
-                    checked={this.state.supplementalFeeding}
+                    checked={this.state.supplemental_feeding}
                     onChange={this.handleCheckBox}
                   />
                 </div>
                 <div className="col">
                   <Check
                     type="radio"
-                    id="supplementalFeeding"
-                    name="supplementalFeeding"
+                    id="supplemental_feeding"
+                    name="supplemental_feeding"
                     label="No"
                     value={false}
-                    checked={this.state.supplementalFeeding === false}
+                    checked={this.state.supplemental_feeding === false}
                     onChange={this.handleCheckBox}
                   />
                 </div>
               </div>
 
-              {this.state.supplementalFeeding && <Fragment>
+              {this.state.supplemental_feeding && <Fragment>
                 <small>Provide details - eg sugar, pollen, protein supplement</small>
 
                 <div className="row">
                   <div className="col">
-                    <input className="form-control" type="text" id="supplementalFeedingDetail" onChange={this.handleFieldChange} value={this.state.supplementalFeedingDetail} />
+                    <input className="form-control" type="text" id="supplemental_feeding_detail" onChange={this.handleFieldChange} value={this.state.supplemental_feeding_detail} />
                   </div>
                 </div>
               </Fragment>}
@@ -463,13 +470,9 @@ class Declaration extends Component {
 
         </div>
 
-        {!this.isReady() && <small className="form-text text-muted">
-          You need to completely the form to submit the declaration.
+        {!this.isReady() && <small className="form-text text-muted mb-3">
+          You need to complete the declaration to create the container.
         </small>}
-
-        <button className="btn btn-success btn-block" onClick={this.handleSubmit} disabled={!this.isReady()}>
-          <Octicon icon={Verified} /> Save Declaration
-        </button>
 
       </Form>
 
@@ -477,6 +480,5 @@ class Declaration extends Component {
   }
 
 }
-const mapStateToProps = ({ dockets }) => ({ dockets });
 
-export default connect(mapStateToProps, { createDeclarationOnDocket })(Declaration);
+export default Declaration;

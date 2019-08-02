@@ -1,25 +1,32 @@
 import axios from 'axios';
+import {collectionOptions, singleOptions} from './interception';
+// import {successHandler} from './interception';
 
-const docketUrl = 'https://localhost:3050/api/dockets';
+// axios.interceptors.response.use(
+//   response => successHandler(response)
+// );
+
+const api = 'https://api.capilano-demo.com/api/dockets';
 
 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
 
 export const getAll = async () => {
-  return await axios.get(docketUrl);
+  return await axios.get(api, collectionOptions('dockets'));
 }
 
 export const getOne = async id => {
-  return await axios.get(`${docketUrl}/${id}`);
+  return await axios.get(`${api}/${id}`, singleOptions('docket'));
 }
 
-export const createDocket = async docket => {
-  return await axios.post(docketUrl, {docket});
+export const create = async docket => {
+  return await axios.post(api, {docket}, singleOptions('docket'));
 }
 
-export const modifyDocket = async (id, docket) => {
-  return await axios.patch(`${docketUrl}/${id}`, {docket});
+export const modify = async (id, docket) => {
+  return await axios.patch(`${api}/${id}`, {docket}, singleOptions('docket'));
 }
 
-export const addDeclarationToDocket = async (id, declaration) => {
-  return await axios.patch(`${docketUrl}/${id}`, {docket: {declaration}});
+export const deleteEntity = async id => {
+  return await axios.delete(`${api}/${id}`, singleOptions('docket'));
 }
+

@@ -1,40 +1,53 @@
 import React, { Component, Fragment } from 'react';
-import Form, { Label, Control, Group, Check } from 'react-bootstrap/Form';
+import Form, { Label, Control, Group } from 'react-bootstrap/Form';
 import DatePicker from "react-datepicker";
+import { format } from 'date-fns/esm';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDoubleLeft, faHome } from '@fortawesome/pro-light-svg-icons';
+import { connect } from 'react-redux';
 
 import "react-datepicker/dist/react-datepicker.css";
 
 import { createNewDocket } from '../../redux/actions/actions';
-import { connect } from 'react-redux';
+
 
 
 class NewDocket extends Component {
 
   state = {
     carrier: '',
-    pickUpDate: '',
-    brandNumber: '',
-    freightPayableBy: ''
+    pickup_date: '',
+    brand_number: '',
+    freight_paid_by: ''
   }
 
   handleSubmit = async event => {
     event.preventDefault();
     await this.props.createNewDocket(this.state);
-    this.props.history.push('/dockets');
+    //this.props.history.push('/dockets');
+    window.location = '/dockets';
   }
 
   handleFieldChange = ({ target }) => this.setState({ [target.id]: target.value });
+  handleChangeFreight = ({target}) => this.setState({freight_paid_by: target.value});
+  handleDateChange = pickup_date => this.setState({ pickup_date });
+  handleChange = ({target}) => this.setState({[target.id]: target.value});
 
-  handleDateChange = pickUpDate => this.setState({ pickUpDate });
+  handleClickBack = () => this.props.history.goBack();
+  handleClickHome = () => this.props.history.push('/');
 
   render() {
+    const disableSave = !this.state.carrier || !this.state.pickup_date || !this.state.brand_number || !this.state.freight_paid_by;
     return <Fragment>
+
+      <div className="mb-3">
+        <div className="btn btn-light btn-lg mr-2" onClick={this.handleClickBack}><FontAwesomeIcon icon={faChevronDoubleLeft} /> back</div>
+        <div className="btn btn-light btn-lg mr-2" onClick={this.handleClickHome}><FontAwesomeIcon icon={faHome} /></div>
+      </div>
+
       <h3>Create Delivery Docket</h3>
 
       <Form onSubmit={this.handleSubmit}>
-        <div className="row">
-          <div className="col"><h5>Delivery Details</h5></div>
-        </div>
 
         <div className="row">
           <div className="col-sm">
@@ -49,73 +62,73 @@ class NewDocket extends Component {
             </Group>
           </div>
           <div className="col-sm">
-            <Group controlId="brandNumber">
-              <Label>Brand Number</Label>
-              <Control
-                type="text"
-                placeholder="Brand Number"
-                autoComplete="brandnumber"
-                value={this.state.brandNumber}
-                onChange={this.handleFieldChange}
-              />
-            </Group>
+            <div className="form-group">
+              <label htmlFor="brand_number">Brand Number</label>
+              <input type="text" id="brand_number" name="brand_number"
+              className="form-control"
+              onChange={this.handleChange}
+              value={this.state.brand_number}/>
+            </div>
           </div>
           <div className="col-sm">
-            <Group controlId="pickUpDate">
+            <Group controlId="pickup_date">
               <Label>Pickup Date</Label>
               <div>
                 <DatePicker className="form-control"
-                  id="pickUpDate"
-                  selected={this.state.pickUpDate}
+                  id="pickup_date"
                   onChange={this.handleDateChange}
-                  dateFormat="dd/MM/yyyy"
+                  value={this.state.pickup_date ? format(this.state.pickup_date, 'd MMMM yyyy') : ''}
+                  dateFormat="yyyy-MM-dd"
+                  minDate={new Date()}
+                  autoComplete="false"
                 />
 
               </div>
-
-              {/* <DatePicker id="example-datepicker" value={this.state.pickUpDate} onChange={this.handleFieldChange} /> */}
-              {/* <Control
-                type="text"
-                placeholder="Pickup Date"
-                autoComplete="pickup-date"
-                value={this.state.pickUpDate}
-                onChange={this.handleFieldChange}
-              /> */}
             </Group>
           </div>
           <div className="col-sm">
-            <Group controlId="freightPayableBy">
-              <Label>Freight payable by</Label>
-              <Fragment>
-                <Check
-                  type="radio"
-                  id="freightPayableBy"
-                  name="formHorizontalRadios"
-                  label="chl"
-                  value="chl"
-                  onClick={this.handleFieldChange}
-                />
-
-                <Check
-                  type="radio"
-                  id="freightPayableBy"
-                  name="formHorizontalRadios"
-                  label="shareholder"
-                  value="shareholder"
-                  onClick={this.handleFieldChange}
-                />
-              </Fragment>
-
-            </Group>
+            <div className="form-group">
+        <label htmlFor="carrier">Freight Paid By</label>
+        <div className="form-check">
+          <label>
+            <input
+              type="radio"
+              name="freight_paid_by"
+              value="Capilano"
+              checked={this.state.freight_paid_by === 'Capilano'}
+              onChange={this.handleChangeFreight}
+              className="form-check-input"
+            />
+            Capilano
+          </label>
+        </div>
+        <div className="form-check">
+          <label>
+            <input
+              type="radio"
+              name="freight_paid_by"
+              value="Keeper"
+              checked={this.state.freight_paid_by === 'Keeper'}
+              onChange={this.handleChangeFreight}
+              className="form-check-input"
+            />
+            Keeper
+          </label>
+        </div>
+      </div>
           </div>
         </div>
 
-
-
-        <button className="btn btn-primary btn-block" onClick={this.handleSubmit}>Create Docket</button>
+        <button
+          className="btn btn-primary btn-block"
+          onClick={this.handleSubmit}
+          disabled={disableSave}
+        >
+          Create Docket
+        </button>
 
         <small className="form-text text-muted">
-          You can add lots and Quality Assurance delaration after you have created this docket.
+          You can add containers to the docket after it has been created.
         </small>
 
       </Form>
