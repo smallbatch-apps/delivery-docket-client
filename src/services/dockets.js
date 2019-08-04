@@ -1,12 +1,12 @@
 import axios from 'axios';
-import {collectionOptions, singleOptions} from './interception';
+import {collectionOptions, singleOptions, API_LOCATION} from './interception';
 // import {successHandler} from './interception';
 
 // axios.interceptors.response.use(
 //   response => successHandler(response)
 // );
 
-const api = 'https://api.capilano-demo.com/api/dockets';
+const api = `${API_LOCATION}/dockets`;
 
 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
 

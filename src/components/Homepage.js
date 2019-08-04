@@ -1,21 +1,28 @@
 import React, {Fragment, Component} from 'react';
-// import { connect } from 'react-redux';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-export default class Homepage extends Component {
+class Homepage extends Component {
 
   render() {
     return <Fragment>
-      <h3>Quick Actions</h3>
+      <h3 className="mb-3">Quick Actions</h3>
 
-      <Link to="/robbings/new" className="btn btn-primary btn-block">Rob Hive</Link>
-      <Link to="/containers/new" className="btn btn-primary btn-block">Create Container</Link>
-      <Link to="/dockets/new" className="btn btn-primary btn-block">Request Delivery</Link>
+      { this.props.loginStatus && <Fragment>
+        <Link to="/robbings/new" className="btn btn-primary btn-block">Rob Hive</Link>
+        <Link to="/containers/new" className="btn btn-primary btn-block">Create Container</Link>
+        <Link to="/dockets/new" className="btn btn-primary btn-block">Request Delivery</Link>
+      </Fragment> }
+
+      { !this.props.loginStatus && <Fragment>
+        <Link to="/login" className="btn btn-primary btn-block">Log In</Link>
+        <Link to="/new-user" className="btn btn-primary btn-block">New User</Link>
+      </Fragment> }
 
     </Fragment>
   }
 }
 
-// const mapStateToProps = ({ dockets }) => ({ dockets });
+const mapStateToProps = ({ loginStatus }) => ({ loginStatus });
 
-// export default connect(mapStateToProps, {fetchAllDockets, fetchAllLots})(Homepage);
+export default connect(mapStateToProps)(Homepage);

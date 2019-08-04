@@ -1,7 +1,6 @@
 import axios from 'axios';
-
-// restricted to my localhost IP
+import {API_LOCATION} from './interception';
 
 export const getPostcodeFromLocation = async latlong => {
-  return await axios.get(`https://api.capilano-demo.com/api/address?latlong=${latlong}`);
+  return await axios.get(`${API_LOCATION}/address?latlong=${latlong}`);
 }

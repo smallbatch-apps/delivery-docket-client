@@ -1,6 +1,8 @@
 import React, {Fragment, Component} from 'react';
 import {logInUser, logOutUser} from '../../redux/actions/actions';
 import {connect} from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLockAlt } from '@fortawesome/pro-light-svg-icons';
 
 import { Form, Button } from 'react-bootstrap';
 
@@ -60,7 +62,9 @@ class Login extends Component {
               isInvalid={hasError}
             />
           </Form.Group>
-          <Button variant="primary" type="submit" >Log In</Button>
+          <Button variant="primary" type="submit" className="btn-block">
+            <FontAwesomeIcon icon={faLockAlt} className="mr-2"/> Log In
+          </Button>
         </Form>
 
         </div>

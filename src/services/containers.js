@@ -1,6 +1,7 @@
 import axios from 'axios';
+import {API_LOCATION} from './interception';
 
-const url = 'https://api.capilano-demo.com/api/containers';
+const url = `${API_LOCATION}/containers`;
 
 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
 

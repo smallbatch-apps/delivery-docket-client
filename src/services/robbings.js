@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {successHandler, requestHandler, errorHandler} from './interception';
+import {successHandler, requestHandler, errorHandler, API_LOCATION} from './interception';
 
 axios.interceptors.response.use(
   request => requestHandler(request),
@@ -7,7 +7,7 @@ axios.interceptors.response.use(
   error => errorHandler(error)
 );
 
-const url = 'https://api.capilano-demo.com/api/robbings';
+const url = `${API_LOCATION}/robbings`;
 
 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
 
