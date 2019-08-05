@@ -54,4 +54,4 @@ export const dateClean = object => {
 
 export const API_LOCATION = process.env.NODE_ENV === 'development' ?
   'http://127.0.0.1:3333/api' :
-  'https://167.71.212.74/api';
+  'https://api.capilano-demo.com/api';
